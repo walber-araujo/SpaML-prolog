@@ -1,11 +1,11 @@
-:- module(metric, [show_accuracy/2, accuracy_recursion/1, accuracy_csvs/1, model_classification/2]).
+:- module(Metric, [show_accuracy/2, accuracy_recursion/1, accuracy_csvs/1, model_classification/2]).
 
 :- use_module(library(csv)).
 :- use_module(library(lists)).
 :- use_module(library(format)).
-:- use_module(model_test).
-:- use_module(utils).
-:- use_module(training).
+:- use_module(ModelTest).
+:- use_module(Utils).
+:- use_module(Training).
 
 
 show_accuracy(File_Path, Accuracy):- exists_file(File_Path),
