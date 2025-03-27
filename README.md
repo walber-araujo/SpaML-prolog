@@ -52,7 +52,7 @@ spaML/
 Linux/MacOS:
 
 ```sh
-
+swipl -t halt app/main.pl
 ```
 
 Windows:
