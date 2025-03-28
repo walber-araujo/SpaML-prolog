@@ -20,7 +20,18 @@ process_option('1'):- write('Not implemented'), !.
 process_option('2'):- write('Not implemented'), !.
 process_option('3'):- write('Not implemented'), !.
 process_option('4'):- write('Not implemented'), !.
-process_option('5'):- write('Not implemented'), !.
+
+% exemplo de uso
+process_option('5'):-
+    ensure_loaded('src/Model'),
+    csv_read_file('data/train_data/SMSSpamCollection.csv', Rows),
+    remove_header(Rows, R),
+    count_words(R, (HamWords, SpamWords, HamCount, SpamCount)),
+    format('\nHam message count: ~w\n', HamCount),
+    format('Spam message count: ~w\n', SpamCount),
+    format('Ham Words: ~w~n', [HamWords]),
+    format('Spam Words: ~w~n', [SpamWords]), !.
+
 process_option('6'):- write('Not implemented'), !.
 process_option('7'):- show_out(), halt.
 

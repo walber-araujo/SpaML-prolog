@@ -108,3 +108,6 @@ ensure_csv_extension(FileName, Result) :-
     ->  Result = FileName
     ;   atom_concat(FileName, '.csv', Result)
     ).
+
+remove_header([row('Label', 'Message') | Tail], Tail):-!.
+remove_header(Rows, Rows).
