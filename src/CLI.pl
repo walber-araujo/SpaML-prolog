@@ -1,7 +1,11 @@
+:- module('Cli.pl', [menu/0]).
+
+:- use_module('Utils.pl').
+:- use_module('Model.pl').
+:- use_module('Intro.pl').
+
 menu:-
-    ensure_loaded('src/Utils'),
-    ensure_loaded('src/Intro'),
-    clear_screen(),
+    clear_screen,
     write('\n====================================================================================\n'),
     write('Menu Options:\n\n'),
     write('[1]. Reuse previous models.\n'),
@@ -23,7 +27,6 @@ process_option('4'):- write('Not implemented'), !.
 
 % exemplo de uso
 process_option('5'):-
-    ensure_loaded('src/Model'),
     csv_read_file('data/train_data/SMSSpamCollection.csv', Rows),
     remove_header(Rows, R),
     count_words(R, (HamWords, SpamWords, HamCount, SpamCount)),
@@ -33,6 +36,6 @@ process_option('5'):-
     format('Spam Words: ~w~n', [SpamWords]), !.
 
 process_option('6'):- write('Not implemented'), !.
-process_option('7'):- show_out(), halt.
+process_option('7'):- show_out, halt.
 
 process_option(_):- write('\nInvalid option. Please try again.\n').

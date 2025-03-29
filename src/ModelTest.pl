@@ -12,7 +12,7 @@ test_model(Records, Ham_Probs, Spam_Probs, Accuracy):-
 
 %Value_Message is 0 or 1
 test_model_recursion([record(Message, Label) | T], Ham_Probs, Spam_Probs, Score):-
-                            classify_Message(Ham_Probs, Spam_Probs, Message, Value_Message),
+                            classify_message(Ham_Probs, Spam_Probs, Message, Value_Message),
                             test_model_recursion(T, Ham_Probs, Spam_Probs, Score_Rec),
                             classifier_message(Value_Message, Label, Result_Classification),
                             Score is Result_Classification + Score_Rec.

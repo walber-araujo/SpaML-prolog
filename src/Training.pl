@@ -1,4 +1,4 @@
-:- module('Training.pl', [train_model_csv/3, clear_screen/0, train_model/5]).
+:- module('Training.pl', [train_model_csv/3, train_model/5]).
 
 :- use_module(library(csv)).
 :- use_module(library(lists)).
@@ -19,6 +19,6 @@ train_model_csv(File_Path, Ham_Probs, Spam_Probs):- exists_file(File_Path),
                             write("Model accuracy on the test set: ~2f%", [Accuracy])).
 
 train_model(Records, Ham_Probs, Spam_Probs, Ham_Count, Spam_Count):-
-                            count_words(Records, [], [], 0, 0, Ham_Words, Spam_Words, Ham_Count, Spam_Count),
+                            count_words(Records, (Ham_Words, Spam_Words, Ham_Count, Spam_Count)),
                             calculate_word_probabilities(Ham_Words, Ham_Count, Spam_Words, Spam_Count, [], Ham_Probs),
                             calculate_word_probabilities(Spam_Words, Spam_Count, Ham_Words, Ham_Count, [], Spam_Probs).

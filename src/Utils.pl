@@ -1,8 +1,11 @@
-:- module('Utils.pl', [clear_screen/0, save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2]).
+:- module('Utils.pl', [clear_screen/0, save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2]).
 
 :- use_module(library(http/json)).
 
-% Clears the terminal, works on Linux and VSCode terminal, not on Windows Command Prompt.
+%% clear_screen is det.
+%
+%  Clears the terminal.
+%
 clear_screen :-
     write('\e[H\e[2J'),
     flush_output.

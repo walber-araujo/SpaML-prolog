@@ -1,4 +1,4 @@
-:- module('Preprocessing.pl', [stop_words_en/1, is_stop_word/2, is_empty/1, replace_non_alpha/2]).
+:- module('Preprocessing.pl', [tokenize/2]).
 
 % Lista de palavras de parada em inglês
 stop_words_en([

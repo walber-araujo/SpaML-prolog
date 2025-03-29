@@ -1,4 +1,6 @@
 :- initialization(main, main).
 
+:- use_module('src/CLI.pl').
+
 main:-
-    ensure_loaded('src/CLI'), menu, halt.
+    menu, halt.

@@ -71,7 +71,7 @@ To run the linter:
 
 To run the tests:
 ```sh
-
+swipl -t halt test/Main.plt
 ```
 
 ---

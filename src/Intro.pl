@@ -6,15 +6,8 @@
     show_out/0
 ]).
 
+:- use_module('Utils.pl').
 :- use_module(library(readutil)).
-
-%% clear_screen is det.
-%
-%  Clears the terminal.
-%
-clear_screen :-
-    write('\e[H\e[2J'),
-    flush_output.
 
 %% type_writer(+Text:string) is semidet.
 %
@@ -75,8 +68,7 @@ show_intro :-
 %  Displays the final message with a typing effect when the user exits the program.
 %
 show_out :-
-    clear_screen,
-    writeln("=========================================="),
+    writeln("\n=========================================="),
     type_writer("   Thank you for using S P A M L!   \n"),
     writeln("=========================================="),
     type_writer("\nGoodbye!\n").
