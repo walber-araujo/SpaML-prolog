@@ -1,3 +1,10 @@
+:- module('Model.pl', [update_current/3, count_phrase/6, count_class/5, count_words/6, calculate_word_probabilities/5]).
+
+:- use_module(library(lists)).
+:- use_module('Classifier.pl').
+:- use_module('Utils.pl').
+:- use_module('Preprocessing.pl').
+
 update_current(Word, [], [(Word, 1)]).
 update_current(Word, [(Word, X)|T], [(Word, X2)|T]):- X2 is X+1, !.
 update_current(Word, [W|T], [W|T2]):- update_current(Word, T, T2).
@@ -28,4 +35,12 @@ count_words([Head|Rows], HamCount, SpamCount, CurrentHamState, CurrentSpamState,
 
 count_words(Rows, R):- ensure_loaded('src/Preprocessing'), count_words(Rows, 0, 0, [], [], R).
 
-%---------------
+calculate_word_probabilities([], _, _, _, []).
+calculate_word_probabilities([(Word, Count)| Tail], Total_Count, Other_Words_Count, Other_Count, [(Word, New_Count) | Tail2]):-
+                    length(Tail, Size_Words_Count),
+                    Word_Given_Class is ((Count + 1) / (Total_Count + Size_Words_Count + 1)), % Laplace smoothing
+                    find_with_default(Other_Words_Count, Word, Other_Count_Word),
+                    length(Other_Words_Count, Size_Other_Words_Count),
+                    Other_Class_Given_Word is ((Other_Count_Word + 1) / (Other_Count + Size_Other_Words_Count)), % Laplace smoothing
+                    New_Count is Word_Given_Class / Other_Class_Given_Word,
+                    calculate_word_probabilities(Tail, Total_Count, Other_Words_Count, Other_Count, Tail2).

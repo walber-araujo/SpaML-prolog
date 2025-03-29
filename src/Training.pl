@@ -1,10 +1,10 @@
-:- module(Training, [train_model_csv/3, clear_screen/0, train_model/5]).
+:- module('Training.pl', [train_model_csv/3, clear_screen/0, train_model/5]).
 
 :- use_module(library(csv)).
 :- use_module(library(lists)).
-:- use_module(ModelTest).
-:- use_module(Utils).
-:- use_module(Model).
+:- use_module('ModelTest.pl').
+:- use_module('Utils.pl').
+:- use_module('Model.pl').
 
 
 train_model_csv(File_Path, Ham_Probs, Spam_Probs):- exists_file(File_Path),

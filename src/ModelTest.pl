@@ -1,8 +1,8 @@
-:- module(ModelTest, [test_model/4, test_model_recursion/4, classifier_message/3]).
+:- module('ModelTest.pl', [test_model/4, test_model_recursion/4, classifier_message/3]).
 
 :- use_module(library(lists)).
-:- use_module(Classifier).
-:- use_module(Utils).
+:- use_module('Classifier.pl').
+:- use_module('Utils.pl').
 
 
 test_model(Records, Ham_Probs, Spam_Probs, Accuracy):-
@@ -10,7 +10,7 @@ test_model(Records, Ham_Probs, Spam_Probs, Accuracy):-
                     length(Records, Total),
                     Accuracy is Score / Total.
 
-#Value_Message is 0 or 1
+%Value_Message is 0 or 1
 test_model_recursion([record(Message, Label) | T], Ham_Probs, Spam_Probs, Score):-
                             classify_Message(Ham_Probs, Spam_Probs, Message, Value_Message),
                             test_model_recursion(T, Ham_Probs, Spam_Probs, Score_Rec),

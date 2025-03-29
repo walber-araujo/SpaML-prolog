@@ -1,16 +1,15 @@
-:- module(Metric, [show_accuracy/2, accuracy_recursion/1, accuracy_csvs/1, model_classification/2]).
+:- module('Metric.pl', [show_accuracy/2, accuracy_recursion/1, accuracy_csvs/1, model_classification/2]).
 
 :- use_module(library(csv)).
 :- use_module(library(lists)).
-:- use_module(library(format)).
-:- use_module(ModelTest).
-:- use_module(Utils).
-:- use_module(Training).
+:- use_module('ModelTest.pl').
+:- use_module('Utils.pl').
+:- use_module('Training.pl').
 
 
 show_accuracy(File_Path, Accuracy):- exists_file(File_Path),
                                 csv_read_file(File_Path, Rows, [functor(my_record), arity(_)]),
-                                (Rows == [] -> write("Error reading the CSV: "), 0.0 ;
+                                (Rows == [] -> write("Error reading the CSV: "), Accuracy is 0.0 ;
                                 divide_csv_training_test(File_Path, Rows, Train_Set, Test_Set),
                                 train_model(Train_Set, Ham_Probs, Spam_Probs, _, _),
                                 test_model(Test_Set, Ham_Probs, Spam_Probs, Raw_Accuracy),
@@ -41,7 +40,7 @@ accuracy_recursion([(Model_Name, File_Path)|T]):- accuracy_recursion(T),
                     format("| |-30t~w~ | |-21.2t~2f~ | ~|-18t~w~ |\n", [Model_Name, Accuracy, Classification])).                                                
 
 
-accuracyCSVs(File_Path):- load_model_map("./data/models/models.json", Model_Map),
+accuracy_csvs(File_Path):- load_model_map("./data/models/models.json", Model_Map),
                         dict_pairs(Model_Map, _, Lista_Model),
                         accuracy_recursion(Lista_Model).
 

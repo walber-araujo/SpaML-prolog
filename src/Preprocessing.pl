@@ -1,3 +1,5 @@
+:- module('Preprocessing.pl', [stop_words_en/1, is_stop_word/2, is_empty/1, replace_non_alpha/2]).
+
 % Lista de palavras de parada em inglês
 stop_words_en([
     "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", 
@@ -21,7 +23,7 @@ tokenize(Text, Tokens) :-
     split_string(CleanText, " ", " ", Words),  % Divide a string em palavras, removendo espaços extras
     exclude(is_empty, Words, NonEmptyWords),  % Remove strings vazias
     exclude(is_stop_word(StopWords), NonEmptyWords, FilteredTokens),
-    !, % **Corte para impedir múltiplas soluções**
+    !, % **Corte para impedir multiplas soluções**
     Tokens = FilteredTokens. % Assegura que apenas um resultado é retornado
 
 % Verifica se a palavra é uma palavra de parada

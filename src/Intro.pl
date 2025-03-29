@@ -1,4 +1,4 @@
-:- module(intro, [
+:- module('Intro.pl', [
     type_writer/1,
     animated_logo/0,
     wait_for_any_key/0,
