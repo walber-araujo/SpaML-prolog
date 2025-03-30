@@ -3,6 +3,7 @@
 :- use_module(library(lists)).
 :- use_module('Classifier.pl').
 :- use_module('Utils.pl').
+:- consult('Utils.pl').
 
 
 test_model(Records, Ham_Probs, Spam_Probs, Accuracy):-

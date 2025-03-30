@@ -7,6 +7,7 @@
 ]).
 
 :- use_module('Utils.pl').
+:- consult('Utils.pl').
 :- use_module(library(readutil)).
 
 %% type_writer(+Text:string) is semidet.

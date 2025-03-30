@@ -4,6 +4,7 @@
 :- use_module(library(lists)).
 :- use_module('ModelTest.pl').
 :- use_module('Utils.pl').
+:- consult('Utils.pl').
 :- use_module('Model.pl').
 
 

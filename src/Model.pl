@@ -3,6 +3,7 @@
 :- use_module(library(lists)).
 :- use_module('Classifier.pl').
 :- use_module('Utils.pl').
+:- consult('Utils.pl').
 :- use_module('Preprocessing.pl').
 
 update_current(Word, [], [(Word, 1)]):- !.

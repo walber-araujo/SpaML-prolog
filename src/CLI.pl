@@ -2,6 +2,7 @@
 
 :- use_module(library(csv)).
 :- use_module('Utils.pl').
+:- consult('Utils.pl').
 :- use_module('Model.pl').
 :- use_module('Intro.pl').
 

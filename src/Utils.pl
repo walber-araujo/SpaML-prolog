@@ -1,6 +1,7 @@
 :- module('Utils.pl', [clear_screen/0, save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2, load_model_map/2]).
 
 :- use_module(library(http/json)).
+:- use_module(library(csv)).
 
 %% clear_screen is det.
 %
@@ -9,6 +10,63 @@
 clear_screen :-
     write('\e[H\e[2J'),
     flush_output.
+
+%% convert_to_records(+Rows:list, -Records:list) is det.
+%
+%  Converts a list of row terms into a list of record terms.
+%
+convert_to_records([], []).
+convert_to_records([row(Label, Message) | Rest], [record(Label, Message) | Records]) :-
+    convert_to_records(Rest, Records).
+
+%% read_csv(+FilePath:string, -Records:list) is det.
+%
+%  Reads a CSV file and returns its contents as a list of records.
+%
+%  @param FilePath The path to the CSV file to be read.
+%  @param Records  A list of records, where each record is a term record(Label, Message).
+%
+read_csv(FilePath, Records) :-
+    (   exists_file(FilePath) 
+    ->  catch(
+            (csv_read_file(FilePath, Rows, [functor(row), arity(2)]),
+             remove_header(Rows, RowRecords),
+             convert_to_records(RowRecords, Records)),
+            Error,
+            (print_message(error, Error), fail)
+        )
+    ;   print_message(error, error('File does not exist.')), fail
+    ).
+
+% divide_dataset(+Records, -TrainSet, -TestSet)
+% Divide um conjunto de dados em treino (70%) e teste (30%).
+divide_dataset([], [], []) :- !.
+divide_dataset(Records, TrainSet, TestSet) :-
+    length(Records, Total),
+    TrainSize is (Total * 7) // 10,
+    split_at(TrainSize, Records, TrainSet, TestSet), !.
+
+% split_at(+N, +List, -FirstPart, -SecondPart)
+% Divide a lista em duas partes: os primeiros N elementos e o restante.
+split_at(0, List, [], List).
+split_at(N, [H|T], [H|First], Second) :-
+    N > 0,
+    N1 is N - 1,
+    split_at(N1, T, First, Second).
+
+% download_default/1 lê o arquivo CSV e retorna uma lista de registros.
+download_default(Records) :-
+    File = '../data/train_data/SMSSpamCollection.csv',
+    read_csv(File, Records).
+
+% divide_csv_training_test(+FilePath:string, +Records:list, -TrainingSet:list, -TestSet:list)
+% Divide o dataset em conjuntos de treinamento e teste com base no arquivo CSV pré-definido ou usa um dataset padrão.
+divide_csv_training_test(FilePath, Records, TrainingSet, TestSet) :-
+    FilePath = '../data/train_data/SMSSpamCollection.csv', !,
+    divide_dataset(Records, TrainingSet, TestSet).  % Dividir o dataset se for o arquivo esperado.
+    
+divide_csv_training_test(_, Records, Records, VectorCsvDefault) :-
+    download_default(VectorCsvDefault).  % Se não for o arquivo esperado, usar o dataset padrão.
 
 %% save_to_csv(+FileName:string, +Classification:string, +Message:string) is det.
 %
