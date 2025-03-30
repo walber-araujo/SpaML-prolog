@@ -1,4 +1,4 @@
-:- module('Utils.pl', [clear_screen/0, save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2]).
+:- module('Utils.pl', [clear_screen/0, save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2, load_model_map/2]).
 
 :- use_module(library(http/json)).
 
