@@ -1,4 +1,4 @@
-:- module('Metric.pl', [show_accuracy/2, accuracy_recursion/1, accuracy_csvs/1, model_classification/2]).
+:- module('Metric.pl', [show_accuracy/2, accuracy_recursion/1, accuracy_csvs/0, model_classification/2]).
 
 :- use_module(library(csv)).
 :- use_module(library(lists)).
@@ -8,13 +8,14 @@
 :- use_module('Training.pl').
 
 
-show_accuracy(File_Path, Accuracy):- exists_file(File_Path),
-                                read_csv(File_Path, Messages),
-                                (Messages == [] -> write("Error reading the CSV: "), Accuracy is 0.0 ;
-                                divide_csv_training_test(File_Path, Messages, Train_Set, Test_Set),
-                                train_model(Train_Set, Ham_Probs, Spam_Probs, _, _),
-                                test_model(Test_Set, Ham_Probs, Spam_Probs, Raw_Accuracy),
-                                Accuracy is round(Raw_Accuracy * 10000) / 100), !.
+show_accuracy(File_Path, Accuracy):- 
+    exists_file(File_Path),
+    read_csv(File_Path, Messages),
+    (Messages == [] -> write("Error reading the CSV: "), Accuracy is 0.0 ;
+    divide_csv_training_test(File_Path, Messages, Train_Set, Test_Set),
+    train_model(Train_Set, Ham_Probs, Spam_Probs, _, _),
+    test_model(Test_Set, Ham_Probs, Spam_Probs, Raw_Accuracy),
+    Accuracy is round(Raw_Accuracy * 10000) / 100), !.
 show_accuracy(_, -1.0).
 
 accuracy_recursion([]):- write("The default model accuracy is calculated by training the model,"), 
@@ -32,19 +33,20 @@ accuracy_recursion([]):- write("The default model accuracy is calculated by trai
                     write("85% - 100% = Good\n"),
                     write("------------------------------------------------------------------------------\n"),
                     write("| Model Name                     | Accuracy (%)          | Classification     |\n"),
-                    write("------------------------------------------------------------------------------").
+                    write("------------------------------------------------------------------------------\n").
 
-accuracy_recursion([(Model_Name, File_Path)|T]):- accuracy_recursion(T),
-                    show_accuracy(File_Path, Accuracy),
-                    (Accuracy =:= (-1.0) -> format("| |-30t~w~ | |-42t~w~ |\n", [Model_Name, "File path not found"]); 
-                    model_classification(Accuracy, Classification),
-                    format("| |-30t~w~ | |-21.2t~2f~ | ~|-18t~w~ |\n", [Model_Name, Accuracy, Classification])).                                                
+accuracy_recursion([Model_Name-File_Path|T]):- 
+    accuracy_recursion(T),
+    show_accuracy(File_Path, Accuracy),
+    (Accuracy =:= (-1.0) -> format("| |-30t~w~ | |-42t~w~ |\n", [Model_Name, "File path not found"]); 
+    model_classification(Accuracy, Classification),
+    format("| ~|~w~t~30+ | ~|~2f~t~21+ | ~|~w~t~18+ |\n", [Model_Name, Accuracy, Classification])).                                                
 
-
-accuracy_csvs(File_Path):- load_model_map("./data/models/models.json", Model_Map),
-                        dict_pairs(Model_Map, _, Lista_Model),
-                        accuracy_recursion(Lista_Model).
-
+%Model_Map é na forma [Key-Value]
+accuracy_csvs:- 
+    load_model_map('./data/models/models.json', Dict_Model),
+    dict_pairs(Dict_Model, _, Model_Map),
+    accuracy_recursion(Model_Map).
 
 model_classification(Accuracy, "Bad"):- Accuracy < 65.0, !.
 model_classification(Accuracy, "Moderate"):- Accuracy < 85.0, !.
