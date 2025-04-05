@@ -34,18 +34,16 @@ process_option("2"):-
     write('Type a name to your model (or "exit" to quit).\n'),
     add_new_model_submenu,
     menu, !.
+
 process_option("3"):- write('Not implemented'), !.
 process_option("4"):- write('Not implemented'), !.
 
-% exemplo de uso
 process_option("5"):-
-    read_csv('data/train_data/SMSSpamCollection.csv', Messages),
-    %remove_header(Rows, R),
-    count_words(Messages, (HamWords, SpamWords, HamCount, SpamCount)),
-    format('\nHam message count: ~w\n', HamCount),
-    format('Spam message count: ~w\n', SpamCount),
-    format('Ham Words: ~w~n', [HamWords]),
-    format('Spam Words: ~w~n', [SpamWords]), !.
+    clear_screen,
+    write('\nClassifying individual messages...\n'),
+    train_model_csv("data/train_data/SMSSpamCollection.csv", Ham_Probs, Spam_Probs),
+    classification_submenu(Ham_Probs, Spam_Probs),
+    menu, !.
 
 process_option("6"):- write('Not implemented'), !.
 process_option("7"):- show_out, halt.
@@ -131,7 +129,7 @@ previous_model_submenu_two('exit', _):-
 previous_model_submenu_two(Model_Name, Model_Map):-
     lookup_model_name(Model_Name, Model_Map).
 
-%Value - path é na forma data/train_data/SMSSpamCollection.csv
+%Value - path é na forma "data/train_data/SMSSpamCollection.csv"
 lookup_model_name(Key, [Key-Value | _]):-
     exists_file(Value),
     write('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
