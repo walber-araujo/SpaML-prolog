@@ -1,4 +1,4 @@
-:- module('Utils.pl', [clear_screen/0, save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2, load_model_map/2]).
+:- module('Utils.pl', [clear_screen/0, divide_dataset/3, divide_csv_training_test/4,save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2, load_model_map/2, read_csv/2, clean_input/2]).
 
 :- use_module(library(http/json)).
 :- use_module(library(csv)).
@@ -61,9 +61,8 @@ download_default(Records) :-
 
 % divide_csv_training_test(+FilePath:string, +Records:list, -TrainingSet:list, -TestSet:list)
 % Divide o dataset em conjuntos de treinamento e teste com base no arquivo CSV pré-definido ou usa um dataset padrão.
-divide_csv_training_test(FilePath, Records, TrainingSet, TestSet) :-
-    FilePath = '../data/train_data/SMSSpamCollection.csv', !,
-    divide_dataset(Records, TrainingSet, TestSet).  % Dividir o dataset se for o arquivo esperado.
+divide_csv_training_test("data/train_data/SMSSpamCollection.csv", Records, TrainingSet, TestSet) :-
+    divide_dataset(Records, TrainingSet, TestSet), !.  % Dividir o dataset se for o arquivo esperado.
     
 divide_csv_training_test(_, Records, Records, VectorCsvDefault) :-
     download_default(VectorCsvDefault).  % Se não for o arquivo esperado, usar o dataset padrão.
@@ -174,3 +173,12 @@ ensure_csv_extension(FileName, Result) :-
 
 remove_header([row('Label', 'Message') | Tail], Tail):-!.
 remove_header(Rows, Rows).
+
+%Retira o ., das entradas
+clean_input(_, _) :-
+    string_chars(_, Chars),
+    (   append(Core, ['.'], Chars)
+    ->  true
+    ;   Core = Chars
+    ),
+    string_chars(_, Core).

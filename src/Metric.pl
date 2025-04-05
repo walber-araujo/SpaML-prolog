@@ -9,9 +9,9 @@
 
 
 show_accuracy(File_Path, Accuracy):- exists_file(File_Path),
-                                csv_read_file(File_Path, Rows, [functor(my_record), arity(_)]),
-                                (Rows == [] -> write("Error reading the CSV: "), Accuracy is 0.0 ;
-                                divide_csv_training_test(File_Path, Rows, Train_Set, Test_Set),
+                                read_csv(File_Path, Messages),
+                                (Messages == [] -> write("Error reading the CSV: "), Accuracy is 0.0 ;
+                                divide_csv_training_test(File_Path, Messages, Train_Set, Test_Set),
                                 train_model(Train_Set, Ham_Probs, Spam_Probs, _, _),
                                 test_model(Test_Set, Ham_Probs, Spam_Probs, Raw_Accuracy),
                                 Accuracy is round(Raw_Accuracy * 10000) / 100), !.

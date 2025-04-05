@@ -22,7 +22,8 @@ tokenize(Text, Tokens) :-
     replace_non_alpha(LowerText, CleanText),  % Substitui caracteres não alfabéticos por espaços
     split_string(CleanText, " ", " ", Words),  % Divide a string em palavras, removendo espaços extras
     exclude(is_empty, Words, NonEmptyWords),  % Remove strings vazias
-    exclude(is_stop_word(StopWords), NonEmptyWords, FilteredTokens),
+    exclude(is_stop_word(StopWords), NonEmptyWords, NoStopWords),
+    exclude(contains_digit, NoStopWords, FilteredTokens),
     !, % **Corte para impedir multiplas soluções**
     Tokens = FilteredTokens. % Assegura que apenas um resultado é retornado
 
@@ -53,3 +54,8 @@ replace_non_alpha_chars([_|T], [' '|R]) :-  % Substitui não-letras nem números
 %    Text = "This is a simple test.",
 %    tokenize(Text, Tokens),
 %    format('Tokens retornados: ~w~n', [Tokens]).  % Exibe os tokens gerados
+
+contains_digit(Word) :-
+    string_chars(Word, Chars),
+    member(Char, Chars),
+    char_type(Char, digit).
