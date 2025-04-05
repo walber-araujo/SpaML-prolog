@@ -29,32 +29,53 @@ process_option("1"):-
     reusing_previous_model_submenu,
     menu, !.
 
-%write('Not implemented'), !.
 process_option("2"):- 
-    write('Not implemented'), !.
+    write('\nAdd a new model by providing a name and selecting a CSV file containing training data.\n'), 
+    write('Type a name to your model (or "exit" to quit).\n'),
+    add_new_model_submenu,
+    menu, !.
+    
 process_option("3"):- 
     clear_screen,
     remove_model_submenu,
     menu, !.
 
-
-
 process_option("4"):- write('Not implemented'), !.
 
-% exemplo de uso
 process_option("5"):-
-    read_csv('data/train_data/SMSSpamCollection.csv', Messages),
-    %remove_header(Rows, R),
-    count_words(Messages, (HamWords, SpamWords, HamCount, SpamCount)),
-    format('\nHam message count: ~w\n', HamCount),
-    format('Spam message count: ~w\n', SpamCount),
-    format('Ham Words: ~w~n', [HamWords]),
-    format('Spam Words: ~w~n', [SpamWords]), !.
+    clear_screen,
+    write('\nClassifying individual messages...\n'),
+    train_model_csv("data/train_data/SMSSpamCollection.csv", Ham_Probs, Spam_Probs),
+    classification_submenu(Ham_Probs, Spam_Probs),
+    menu, !.
 
 process_option("6"):- write('Not implemented'), !.
 process_option("7"):- show_out, halt.
 
 process_option(_):- write('\nInvalid option. Please try again ok.\n').
+
+add_new_model_submenu:-
+    write('Enter the new model name: '),
+    read_line_to_string(user_input, Model),
+    string_to_atom(Model,Model_Name),
+    (Model_Name \= 'exit' ->
+    ask_path(Path_Model),
+    (Path_Model \= "unknown" ->
+    save_model_to_json(Model_Name, Path_Model));
+    _ = Model_Name
+    ).
+
+ask_path(Model_Path):-
+    write('Enter the model path (or "exit" to quit): '),
+    read_line_to_string(user_input, Path),
+    string_to_atom(Path,File_Path),
+    (File_Path \= 'exit' ->
+    (exists_file(File_Path) -> 
+    Model_Path = File_Path ;
+    clear_screen,
+    format('\n⚠️ Model ~w not found. Please try again.\n', [File_Path]),
+    ask_path(Model_Path)) ;
+    Model_Path = "unknown").
 
 classification_submenu(Ham_Probs, Spam_Probs):-
     clear_screen,
@@ -112,7 +133,7 @@ previous_model_submenu_two('exit', _):-
 previous_model_submenu_two(Model_Name, Model_Map):-
     lookup_model_name(Model_Name, Model_Map).
 
-%Value - path é na forma data/train_data/SMSSpamCollection.csv
+%Value - path é na forma "data/train_data/SMSSpamCollection.csv"
 lookup_model_name(Key, [Key-Value | _]):-
     exists_file(Value),
     write('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
