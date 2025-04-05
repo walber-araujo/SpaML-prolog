@@ -32,7 +32,13 @@ process_option("1"):-
 %write('Not implemented'), !.
 process_option("2"):- 
     write('Not implemented'), !.
-process_option("3"):- write('Not implemented'), !.
+process_option("3"):- 
+    clear_screen,
+    remove_model_submenu,
+    menu, !.
+
+
+
 process_option("4"):- write('Not implemented'), !.
 
 % exemplo de uso
@@ -126,3 +132,48 @@ lookup_model_name(Model_Name, []):-
     clear_screen,
     format('\n⚠️  Model ~w not found. Please try again.\n', [Model_Name]),
     reusing_previous_model_submenu.
+
+
+
+%% remove_model_submenu is det.
+%
+%  Displays a submenu to remove a model from the models JSON file.
+%  When a model is removed, its key and value are deleted from the JSON.
+%
+remove_model_submenu :-
+    JsonPath = "./data/models/models.json",
+    load_model_map(JsonPath, ModelMap),
+    (   is_dict(ModelMap)
+    ->  true
+    ;   ModelMap = _{}  % Garante que ModelMap seja um dict.
+    ),
+    (   ModelMap = {} ->
+            nl, write("\nNo models found to remove."), nl,
+            wait_for_any_key
+    ;   nl, write("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"), nl,
+        write("       Available Models       "), nl,
+        write("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"), nl,
+        print_models(ModelMap),
+        write("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"), nl,
+        write("\nEnter the name of the model to remove (or 'exit' to cancel): "),
+        flush_output(current_output),
+        read_line_to_string(user_input, InputString),
+        (   InputString = "exit" ->
+                true
+        ;   atom_string(ModelAtom, InputString),
+            (   member(ModelAtom, [modelo1, modelo2]) ->
+                    format("\n⚠️  Model '~w' cannot be removed as it is a default model of the system.\n", [ModelAtom]),
+                    wait_for_any_key,
+                    remove_model_submenu
+            ;   (   get_dict(ModelAtom, ModelMap, _) ->
+                        % Remove a chave usando o helper remove_key_from_dict/3.
+                        remove_key_from_dict(ModelAtom, ModelMap, UpdatedModels),
+                        write_json(JsonPath, UpdatedModels),
+                        format("\nModel '~w' removed successfully!\n", [ModelAtom]),
+                        wait_for_any_key
+                ;   format("\nModel '~w' not found. Please try again.\n", [ModelAtom]),
+                    remove_model_submenu
+                )
+            )
+        )
+    ).

@@ -1,4 +1,4 @@
-:- module('Utils.pl', [clear_screen/0, divide_dataset/3, divide_csv_training_test/4,save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2, load_model_map/2, read_csv/2, clean_input/2]).
+:- module('Utils.pl', [clear_screen/0, divide_dataset/3, divide_csv_training_test/4,save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2, load_model_map/2, read_csv/2, clean_input/2, write_json/2, remove_key_from_dict/3]).
 
 :- use_module(library(http/json)).
 :- use_module(library(csv)).
@@ -182,3 +182,21 @@ clean_input(_, _) :-
     ;   Core = Chars
     ),
     string_chars(_, Core).
+
+%% write_json(+Path:string, +Data:dict) is det.
+%
+%  Writes the given Data (a dict) to the file at Path in JSON format.
+%
+write_json(Path, Data) :-
+    open(Path, write, Stream),
+    json_write_dict(Stream, Data),
+    close(Stream).
+
+% Helper to remove a key from a dict.
+remove_key_from_dict(Key, Dict, NewDict) :-
+    dict_pairs(Dict, Tag, Pairs),
+    exclude(pair_with_key(Key), Pairs, NewPairs),
+    dict_create(NewDict, Tag, NewPairs).
+
+pair_with_key(Key, Key-_) :- !.
+pair_with_key(_, _) :- false.
