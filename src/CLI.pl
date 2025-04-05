@@ -49,7 +49,12 @@ process_option("5"):-
     classification_submenu(Ham_Probs, Spam_Probs),
     menu, !.
 
-process_option("6"):- write('Not implemented'), !.
+process_option("6"):- 
+    clear_screen,
+    write('\nShowing results with accuracy rates...\n'),
+    accuracy_csvs,
+    menu, !.
+
 process_option("7"):- show_out, halt.
 
 process_option(_):- write('\nInvalid option. Please try again ok.\n').
