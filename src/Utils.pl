@@ -101,7 +101,7 @@ save_to_csv(FileName, Classification, Message) :-
 %  This predicate updates the JSON file with the models information and shows a message indicating success.
 %
 save_model_to_json(ModelName, FilePath) :-
-    JsonPath = './data/models/models.json',
+    JsonPath = '../data/models/models.json',
 
     % Load the existing models from the JSON file or create a new dictionary if not exists.
     (   exists_file(JsonPath)

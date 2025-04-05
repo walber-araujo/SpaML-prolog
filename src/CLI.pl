@@ -40,7 +40,22 @@ process_option("3"):-
     remove_model_submenu,
     menu, !.
 
-process_option("4"):- write('Not implemented'), !.
+process_option("4") :-
+    clear_screen,
+    write('Training model manually...\n'),
+    write('Enter the file name or type exit to return: '),
+    flush_output,
+    read_line_to_string(user_input, FileName),
+    ( FileName == "exit" ->
+        clear_screen,
+        menu
+    ;   
+        ensure_csv_extension(FileName, CSVName),
+        string_to_atom(CSVName, ModelName),
+        atomic_list_concat(["../data/train_data/", CSVName], FilePath),
+        clear_screen,
+        training_manual_submenu(FilePath, ModelName)
+    ), !.
 
 process_option("5"):-
     clear_screen,
@@ -81,6 +96,54 @@ ask_path(Model_Path):-
     format('\n⚠️ Model ~w not found. Please try again.\n', [File_Path]),
     ask_path(Model_Path)) ;
     Model_Path = "unknown").
+
+training_manual_submenu(FilePath, ModelName) :-
+    open(FilePath, write, Stream),
+    format(Stream, "Label,Message\n", []),
+    close(Stream),
+
+    write('Enter spam messages first. Type "exit" to move to ham messages.\n'),
+    flush_output,
+    collect_messages(FilePath, "spam"),
+
+    clear_screen,
+    write('Now enter ham messages. Type "exit" to stop.\n'),
+    flush_output,
+    collect_messages(FilePath, "ham"),
+
+    clear_screen,
+    write('Do you want to save this model? (y/n): '),
+    flush_output,
+    read_line_to_string(user_input, Save),
+    ( Save == "y" ->
+        % Salva o caminho no JSON
+        atom_concat("data/train_data/", ModelName, RelativePath),
+        save_model_to_json(ModelName, RelativePath),
+        writeln('Model saved successfully.\n')
+    ; 
+        delete_file(FilePath),
+        writeln('Model not saved. File deleted.\n')
+    ),
+    wait_for_any_key,
+    menu.
+
+collect_messages(FilePath, Label) :-
+    open(FilePath, append, Stream),
+    collect_loop(Stream, Label),
+    close(Stream).
+
+collect_loop(Stream, Label) :-
+    format("~w> ", [Label]),
+    flush_output,
+    read_line_to_string(user_input, Msg),
+    ( Msg == "exit" ->
+        true
+    ; Msg == "" ->
+        collect_loop(Stream, Label)
+    ; 
+        format(Stream, "~w,\"~w\"\n", [Label, Msg]),
+        collect_loop(Stream, Label)
+    ).
 
 classification_submenu(Ham_Probs, Spam_Probs):-
     clear_screen,
