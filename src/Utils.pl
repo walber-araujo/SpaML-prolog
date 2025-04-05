@@ -1,4 +1,4 @@
-:- module('Utils.pl', [clear_screen/0, divide_dataset/3, divide_csv_training_test/4,save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2, load_model_map/2, read_csv/2, clean_input/2]).
+:- module('Utils.pl', [clear_screen/0, divide_dataset/3, divide_csv_training_test/4,save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2, load_model_map/2, read_csv/2, clean_input/2, flush_stdin/0]).
 
 :- use_module(library(http/json)).
 :- use_module(library(csv)).
@@ -182,3 +182,8 @@ clean_input(_, _) :-
     ;   Core = Chars
     ),
     string_chars(_, Core).
+
+flush_stdin :-
+    repeat,
+    get_char(Char),
+    (Char = '\n'; Char == end_of_file), !.
