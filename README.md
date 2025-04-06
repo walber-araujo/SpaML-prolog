@@ -27,6 +27,31 @@ spaML is a spam message classifier developed in **Prolog**, using the **Naive Ba
 
 ```
 spaML/
+├── README.md
+├── app
+│   └── main.pl
+├── data
+│   ├── models
+│   │   └── models.json
+│   └── train_data
+│       ├── SMSSpamCollection.csv
+│       └── short_messages_formatted.csv
+├── src
+│   ├── CLI.pl
+│   ├── Classifier.pl
+│   ├── Intro.pl
+│   ├── Metric.pl
+│   ├── Model.pl
+│   ├── ModelTest.pl
+│   ├── Preprocessing.pl
+│   ├── Training.pl
+│   └── Utils.pl
+└── test
+    ├── ClassifierTest.plt
+    ├── Main.plt
+    ├── ModelTest.plt
+    ├── PreprocessingTest.plt
+    └── TrainingTest.plt
 ```
 
 ---
@@ -39,15 +64,10 @@ spaML/
 
 1️⃣ Clone the repository:
 ```sh
-
+git clone https://github.com/walber-araujo/SpaML-prolog.git
 ```
 
-2️⃣ Build the project:
-```sh
-
-```
-
-3️⃣ Run:
+2️⃣ Run:
 
 Linux/MacOS:
 
