@@ -20,7 +20,7 @@ menu:-
     write('[5]. Classify individual messages using the default model.\n'),
     write('[6]. Show results with accuracy rates.\n'),
     write('[7]. Exit.\n'),
-    write("\nChoose an option (1-7): "),
+    write('\nChoose an option (1-7): '),
     read_line_to_string(user_input, Option),
     process_option(Option).
 
@@ -72,7 +72,10 @@ process_option("6"):-
 
 process_option("7"):- show_out, halt.
 
-process_option(_):- write('\nInvalid option. Please try again ok.\n').
+process_option(_):-
+    write('\nInvalid option. Please try again.\n'),
+    wait_for_any_key,
+    menu.
 
 add_new_model_submenu:-
     write('Enter the new model name: '),
@@ -250,7 +253,7 @@ remove_model_submenu :-
         (   InputString = "exit" ->
                 true
         ;   atom_string(ModelAtom, InputString),
-            (   member(ModelAtom, [modelo1, modelo2]) ->
+            (   member(ModelAtom, [model1, model2]) ->
                     format("\n⚠️  Model '~w' cannot be removed as it is a default model of the system.\n", [ModelAtom]),
                     wait_for_any_key,
                     remove_model_submenu
