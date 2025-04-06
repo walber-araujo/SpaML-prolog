@@ -52,7 +52,7 @@ process_option("4") :-
     ;   
         ensure_csv_extension(FileName, CSVName),
         string_to_atom(CSVName, ModelName),
-        atomic_list_concat(["../data/train_data/", CSVName], FilePath),
+        atomic_list_concat(["data/train_data/", CSVName], FilePath),
         clear_screen,
         training_manual_submenu(FilePath, ModelName)
     ), !.

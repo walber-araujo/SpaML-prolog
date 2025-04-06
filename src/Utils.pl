@@ -200,11 +200,3 @@ remove_key_from_dict(Key, Dict, NewDict) :-
 
 pair_with_key(Key, Key-_) :- !.
 pair_with_key(_, _) :- false.
-
-% get_project_file_path(+Segments:list, -Path:string)
-% Retorna um caminho absoluto para um arquivo dentro da estrutura do projeto.
-get_project_file_path(Segments, Path) :-
-    prolog_load_context(directory, CurrentDir),
-    append([CurrentDir, '..'], Segments, PathParts),
-    atomic_list_concat(PathParts, '/', RawPath),
-    normalize_space(atom(Path), RawPath).
