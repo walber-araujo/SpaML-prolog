@@ -1,3 +1,12 @@
+/*
+  Prolog Linter Script
+  ---------------------
+  This script is a simple high-level linter for Prolog projects. It uses SWI-Prolog to load
+  all .pl files in the "src" directory and checks for any warnings or errors that occur during the load.
+  If any issues are detected, the script exits with code 1 (indicating failure); otherwise, it exits with code 0.
+  This tool is useful for Continuous Integration (CI) systems like GitHub Actions to enforce code quality.
+*/
+
 :- initialization(main).
 :- set_prolog_flag(warnings, on).
 
@@ -8,10 +17,10 @@
 % to indicate that an issue was encountered during linting.
 :- multifile prolog:message_hook/3.
 prolog:message_hook(_, Level, _Lines) :-
-    member(Level, [warning,error]),
+    member(Level, [warning, error]),
     ( lint_error -> true ; assertz(lint_error) ),
     fail.
-prolog:message_hook(_,_,_).
+prolog:message_hook(_, _, _).
 
 % main/0 - The entry point of the linter.
 %
@@ -19,7 +28,6 @@ prolog:message_hook(_,_,_).
 % and then halts with exit code 1 if any warnings or errors were captured,
 % or with exit code 0 if everything passed.
 main :-
-    % Search for .pl files within the "src" directory (adjust the path as needed)
     expand_file_name('src/*.pl', Files),
     lint_files(Files),
     ( lint_error -> halt(1) ; halt(0) ).

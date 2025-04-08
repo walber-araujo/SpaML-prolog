@@ -77,7 +77,7 @@ accuracy_recursion([Model_Name-File_Path|T]):-
 %  Loads a dictionary of model configurations from a JSON file and initiates accuracy evaluation
 %  for each model entry found in the dataset.
 %
-%  Relies on `load_model_map/2` to parse the JSON and `accuracy_recursion/1` to process each model.
+%  Relies on 'load_model_map/2' to parse the JSON and 'accuracy_recursion/1' to process each model.
 accuracy_csvs:- 
     load_model_map('./data/models/models.json', Dict_Model),
     dict_pairs(Dict_Model, _, Model_Map),
