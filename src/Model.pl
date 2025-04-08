@@ -1,4 +1,4 @@
-:- module('Model.pl', [count_words/6, calculate_word_probabilities/5]).
+:- module('Model.pl', [count_words/2, calculate_word_probabilities/5]).
 
 :- use_module(library(lists)).
 :- use_module('Classifier.pl').

@@ -18,6 +18,6 @@ sum_probs([Word | Rest], Probs_Map, Sum) :-
     Sum is LogProb + Rest_Sum.
 
 find_with_default(_, [], 0).
-find_with_default(Key, [row(Key, Value) | _], Value) :- !.
+find_with_default(Key, [(Key, Value) | _], Value) :- !.
 find_with_default(Key, [_ | Rest], Value) :-
     find_with_default(Key, Rest, Value).

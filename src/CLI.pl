@@ -27,18 +27,18 @@ menu:-
 process_option("1"):- 
     clear_screen,
     reusing_previous_model_submenu,
-    menu, !.
+    menu.
 
 process_option("2"):- 
     write('\nAdd a new model by providing a name and selecting a CSV file containing training data.\n'), 
     write('Type a name to your model (or "exit" to quit).\n'),
     add_new_model_submenu,
-    menu, !.
+    menu.
     
 process_option("3"):- 
     clear_screen,
     remove_model_submenu,
-    menu, !.
+    menu.
 
 process_option("4") :-
     clear_screen,
@@ -55,20 +55,21 @@ process_option("4") :-
         atomic_list_concat(["data/train_data/", CSVName], FilePath),
         clear_screen,
         training_manual_submenu(FilePath, ModelName)
-    ), !.
+    ).
 
 process_option("5"):-
     clear_screen,
     write('\nClassifying individual messages...\n'),
     train_model_csv("data/train_data/SMSSpamCollection.csv", Ham_Probs, Spam_Probs),
     classification_submenu(Ham_Probs, Spam_Probs),
-    menu, !.
+    menu.
 
 process_option("6"):- 
     clear_screen,
     write('\nShowing results with accuracy rates...\n'),
     accuracy_csvs,
-    menu, !.
+    wait_for_any_key,
+    menu.
 
 process_option("7"):- show_out, halt.
 
