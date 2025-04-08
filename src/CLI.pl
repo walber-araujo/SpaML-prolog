@@ -64,12 +64,11 @@ process_option("4") :-
     ( FileName == "exit" ->
         clear_screen,
         menu
-    ;   
+    ;  
+        string_to_atom(FileName, ModelName),
         ensure_csv_extension(FileName, CSVName),
-        string_to_atom(CSVName, ModelName),
-        atomic_list_concat(["data/train_data/", CSVName], FilePath),
         clear_screen,
-        training_manual_submenu(FilePath, ModelName)
+        training_manual_submenu(CSVName, ModelName)
     ).
 
 process_option("5"):-
@@ -152,7 +151,8 @@ ask_path(Model_Path):-
 %       - If yes, the models path is saved in the model registry (models.json).
 %       - If no, the temporary training file is deleted.
 %    5. Returns to the main menu after completion.
-training_manual_submenu(FilePath, ModelName) :-
+training_manual_submenu(CSVName, ModelName) :-
+    atomic_list_concat(["data/train_data/", CSVName], FilePath),
     open(FilePath, write, Stream),
     format(Stream, "Label,Message\n", []),
     close(Stream),
@@ -172,8 +172,7 @@ training_manual_submenu(FilePath, ModelName) :-
     read_line_to_string(user_input, Save),
     ( Save == "y" ->
         % Salva o caminho no JSON
-        atom_concat("data/train_data/", ModelName, RelativePath),
-        save_model_to_json(ModelName, RelativePath),
+        save_model_to_json(ModelName, FilePath),
         writeln('Model saved successfully.\n')
     ; 
         delete_file(FilePath),
