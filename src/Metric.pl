@@ -68,9 +68,11 @@ accuracy_recursion([]):- write("The default model accuracy is calculated by trai
 accuracy_recursion([Model_Name-File_Path|T]):- 
     accuracy_recursion(T),
     show_accuracy(File_Path, Accuracy),
-    (Accuracy =:= (-1.0) -> format("| |-30t~w~ | |-42t~w~ |\n", [Model_Name, "File path not found"]); 
+    (Accuracy =:= (-1.0) -> format('| |-30t~w~ | |-42t~w~ |\n', [Model_Name, "File path not found"]); 
     model_classification(Accuracy, Classification),
-    format("| ~|~w~t~30+ | ~|~2f~t~21+ | ~|~w~t~18+ |\n", [Model_Name, Accuracy, Classification])).                                                
+    format('| ~|~w~t~30+ | ~|~2f~t~21+ | ~|~w~t~18+ |\n', [Model_Name, Accuracy, Classification])).                                                
+
+
 
 %% accuracy_csvs is det.
 %

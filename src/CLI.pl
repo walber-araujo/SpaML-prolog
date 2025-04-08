@@ -16,7 +16,7 @@
 %  Displays the main menu interface and processes user input.
 %
 %  - Prompts the user to select an option by entering a number between 1 and 7.
-%  - Passes the input string to `process_option/1` for handling.
+%  - Passes the input string to 'process_option/1' for handling.
 %
 %  This is the central navigation point for the system, allowing the user to interact
 %  with all major functionalities of the application.
@@ -100,7 +100,7 @@ process_option(_):-
 %    - Asks for a model name.
 %    - If the input is not "exit", prompts for the model file path.
 %    - Validates the file path.
-%    - If valid, saves the model name and path to a JSON map using `save_model_to_json/2`.
+%    - If valid, saves the model name and path to a JSON map using 'save_model_to_json/2'.
 %    - If the path is invalid or the user types "exit", the operation is canceled silently.
 add_new_model_submenu:-
     write('Enter the new model name: '),
@@ -192,7 +192,7 @@ training_manual_submenu(FilePath, ModelName) :-
 %
 %  Behavior:
 %    - Opens the specified file for appending.
-%    - Calls `collect_loop/2` to read and store messages with the given label.
+%    - Calls 'collect_loop/2' to read and store messages with the given label.
 %    - Ensures the stream is properly closed after the loop ends.
 collect_messages(FilePath, Label) :-
     open(FilePath, append, Stream),
@@ -212,7 +212,7 @@ collect_messages(FilePath, Label) :-
 %    - Prompts the user to input a message with the given label.
 %    - If the user types "exit", the loop stops.
 %    - If the input is empty (""), it re-prompts without writing.
-%    - Otherwise, it writes the message in the format: `Label,"Message"` to the stream.
+%    - Otherwise, it writes the message in the format: 'Label,"Message"' to the stream.
 %    - Repeats the process recursively.
 collect_loop(Stream, Label) :-
     format("~w> ", [Label]),
@@ -241,7 +241,7 @@ collect_loop(Stream, Label) :-
 %        1. Classify a message.
 %        2. Return to the main menu.
 %    - Reads the user input as a string.
-%    - Delegates the handling of the selected option to `classification_submenu_two/3`.
+%    - Delegates the handling of the selected option to 'classification_submenu_two/3'.
 classification_submenu(Ham_Probs, Spam_Probs):-
     clear_screen,
     write('\nClassification Submenu:\n'),
@@ -263,12 +263,12 @@ classification_submenu(Ham_Probs, Spam_Probs):-
 %  Behavior:
 %    - If Option is "1":
 %        - Clears the screen.
-%        - Starts the message classification loop via `loop/2`.
+%        - Starts the message classification loop via 'loop/2'.
 %    - If Option is "2":
 %        - Clears the screen and returns to the main menu with a message.
 %    - For any other Option:
 %        - Informs the user of the invalid input.
-%        - Calls `classification_submenu/2` again to re-prompt the user.
+%        - Calls 'classification_submenu/2' again to re-prompt the user.
 classification_submenu_two("1", Ham_Probs, Spam_Probs):-
     clear_screen,
     loop(Ham_Probs, Spam_Probs), !.
@@ -290,7 +290,7 @@ classification_submenu_two(_, Ham_Probs, Spam_Probs):-
 %  Behavior:
 %    - Prompts the user to input a message to classify.
 %    - If the user enters "exit", the loop ends and control returns to the main menu.
-%    - Otherwise, the message is classified using `classify_message/4`:
+%    - Otherwise, the message is classified using 'classify_message/4':
 %        - Displays whether the message is classified as "ham" or "spam".
 %    - The loop then repeats, allowing continuous classification.
 loop(Ham_Probs, Spam_Probs):-
@@ -319,7 +319,7 @@ loop(Ham_Probs, Spam_Probs):-
 %  - Displays a formatted list of available models.
 %  - Prompts the user to enter the name of the model they wish to reuse.
 %  - If the user enters "exit", returns to the main menu.
-%  - Otherwise, attempts to find and use the selected model via `previous_model_submenu_two/2`.
+%  - Otherwise, attempts to find and use the selected model via 'previous_model_submenu_two/2'.
 reusing_previous_model_submenu:-
     load_model_map('./data/models/models.json', Dict_Model),
     write('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
@@ -339,7 +339,7 @@ reusing_previous_model_submenu:-
 %
 %  Behavior:
 %  - If the user inputs "exit", it clears the screen and returns to the main menu.
-%  - Otherwise, it attempts to find and load the model by calling `lookup_model_name/2`.
+%  - Otherwise, it attempts to find and load the model by calling 'lookup_model_name/2'.
 %
 %  @param Model_Name The name of the model entered by the user.
 %  @param Model_Map A list of pairs ModelName-CSVPath representing the available models.
@@ -356,7 +356,7 @@ previous_model_submenu_two(Model_Name, Model_Map):-
 %  Each element in ModelMap is a pair Key-Value, where Key is the model name and Value is the path to the models CSV file.
 %
 %  Behavior:
-%  - If the model is found and the CSV file exists, it loads and trains the model using `train_model_csv/3`,
+%  - If the model is found and the CSV file exists, it loads and trains the model using 'train_model_csv/3',
 %    launches the classification submenu with the trained model, then clears the screen and returns to the main menu.
 %  - If the model is found but the file does not exist, it notifies the user and redirects to the previous submenu.
 %  - If the model is not found after checking all pairs, it shows an error and redirects to the submenu.

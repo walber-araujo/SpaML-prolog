@@ -77,7 +77,7 @@ split_at(N, [H|T], [H|First], Second) :-
 %  @param Records  A list of records read from the default CSV file.
 %
 download_default(Records) :-
-    File = '../data/train_data/SMSSpamCollection.csv',
+    File = './data/train_data/SMSSpamCollection.csv',
     read_csv(File, Records).
 
 %% divide_csv_training_test(+FilePath:string, +Records:list, -TrainingSet:list, -TestSet:list) is det.
@@ -191,10 +191,10 @@ print_models(ModelsDict) :-
 
 %% ensure_csv_extension(+FileName:string, -Result:string) is det.
 %
-%  Ensure that the file name has the suffix `.csv`.
+%  Ensure that the file name has the suffix '.csv'.
 %
 %  @param FileName The original file name.
-%  @param Result   The file name ensured to end with `.csv`.
+%  @param Result   The file name ensured to end with '.csv'.
 %
 ensure_csv_extension(FileName, Result) :-
     (   sub_atom(FileName, _, 4, 0, '.csv')
