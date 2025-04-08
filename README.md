@@ -86,7 +86,7 @@ Windows:
 
 To run the linter:
 ```sh
-
+swipl -s lint.pl
 ```
 
 To run the tests:
@@ -117,8 +117,6 @@ ham,Hello, how are you?
 spam,You won a free prize! Click here!
 ```
 > Where `label` can be **ham** or **spam**.
-
----
 
 ---
 
