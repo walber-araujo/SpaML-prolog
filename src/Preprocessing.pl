@@ -1,6 +1,13 @@
+%%Module      : Preprocessing
+%Description : Preprocessing of text (cleaning and tokenization).
+%Stability   : stable.
 :- module('Preprocessing.pl', [tokenize/2]).
 
-% Lista de palavras de parada em inglês
+%% stop_words_en(-StopWords:list) is det.
+%
+%  Provides a predefined list of English stop words commonly filtered out in text processing.
+%
+%  @param StopWords  The list of stop words.
 stop_words_en([
     "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", 
     "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", 
@@ -15,31 +22,60 @@ stop_words_en([
     "hasn", "haven", "isn", "ma", "mightn", "mustn", "needn", "shan", "shouldn", "wasn", "weren", "won", "wouldn"
 ]).
 
-% Função de tokenização
+%% tokenize(+Text:string, -Tokens:list) is det.
+%
+%  Tokenizes input text into a list of filtered words by:
+%  - Converting to lowercase
+%  - Replacing non-alphanumeric characters with spaces
+%  - Splitting into words
+%  - Removing empty strings, stop words, and words containing digits
+%
+%  @param Text    The input text to be tokenized.
+%  @param Tokens  The resulting list of clean tokens.
 tokenize(Text, Tokens) :-
     stop_words_en(StopWords),
-    string_lower(Text, LowerText),  % Converte o texto para minúsculas
-    replace_non_alpha(LowerText, CleanText),  % Substitui caracteres não alfabéticos por espaços
-    split_string(CleanText, " ", " ", Words),  % Divide a string em palavras, removendo espaços extras
-    exclude(is_empty, Words, NonEmptyWords),  % Remove strings vazias
+    string_lower(Text, LowerText),  
+    replace_non_alpha(LowerText, CleanText),  
+    split_string(CleanText, " ", " ", Words), 
+    exclude(is_empty, Words, NonEmptyWords), 
     exclude(is_stop_word(StopWords), NonEmptyWords, NoStopWords),
     exclude(contains_digit, NoStopWords, FilteredTokens),
-    !, % **Corte para impedir multiplas soluções**
-    Tokens = FilteredTokens. % Assegura que apenas um resultado é retornado
+    !, %
+    Tokens = FilteredTokens.
 
-% Verifica se a palavra é uma palavra de parada
+%% is_stop_word(+StopWords:list, +Word:string) is semidet.
+%
+%  Succeeds if the given word is a member of the stop word list.
+%
+%  @param StopWords  A list of stop words.
+%  @param Word       The word to check against the stop word list.
 is_stop_word(StopWords, Word) :-
     member(Word, StopWords).
 
-% Verifica se a string está vazia
+%% is_empty(+String:string) is semidet.
+%
+%  Succeeds if the given string is empty.
+%
+%  @param String  The input string to be checked.
 is_empty("").
 
-% Substitui caracteres não alfabéticos (exceto números) por espaços
+%% replace_non_alpha(+String:string, -Result:string) is det.
+%
+%  Processes a string by replacing all non-alphabetic and non-digit characters with spaces.
+%
+%  @param String  The original input string.
+%  @param Result  The resulting string after replacement.
 replace_non_alpha(String, Result) :-
-    string_chars(String, Chars),        % Converte a string para uma lista de caracteres
+    string_chars(String, Chars),       
     replace_non_alpha_chars(Chars, CleanChars),
-    string_chars(Result, CleanChars).   % Converte a lista de volta para string
+    string_chars(Result, CleanChars).   
 
+%% replace_non_alpha_chars(+Chars:list, -Cleaned:list) is det.
+%
+%  Replaces all non-alphabetic and non-digit characters in a character list with spaces.
+%
+%  @param Chars    The input list of characters.
+%  @param Cleaned  The resulting list with non-alphanumeric characters replaced by spaces.
 replace_non_alpha_chars([], []).
 replace_non_alpha_chars([H|T], [H|R]) :-
     (   char_type(H, alpha)        % Mantém letras
@@ -49,12 +85,11 @@ replace_non_alpha_chars([H|T], [H|R]) :-
 replace_non_alpha_chars([_|T], [' '|R]) :-  % Substitui não-letras nem números por espaços
     replace_non_alpha_chars(T, R).
 
-% Teste de tokenização
-%test_tokenize :-
-%    Text = "This is a simple test.",
-%    tokenize(Text, Tokens),
-%    format('Tokens retornados: ~w~n', [Tokens]).  % Exibe os tokens gerados
-
+%% contains_digit(+Word:string) is semidet.
+%
+%  Succeeds if the given word contains at least one digit character.
+%
+%  @param Word  The input word to be checked for digits.
 contains_digit(Word) :-
     string_chars(Word, Chars),
     member(Char, Chars),

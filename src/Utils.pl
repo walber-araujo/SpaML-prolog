@@ -1,3 +1,6 @@
+%%Module      : Utils
+%Description : Utility functions for file handling, data manipulation, and model management.
+%Stability   : stable
 :- module('Utils.pl', [clear_screen/0, divide_dataset/3, divide_csv_training_test/4,save_to_csv/3, save_model_to_json/2, print_models/1, ensure_csv_extension/2, remove_header/2, load_model_map/2, read_csv/2, clean_input/2, write_json/2, remove_key_from_dict/3]).
 
 :- use_module(library(http/json)).
@@ -15,6 +18,8 @@ clear_screen :-
 %
 %  Converts a list of row terms into a list of record terms.
 %
+%  @param Rows     A list of terms in the format row(Label, Message).
+%  @param Records  A list of terms in the format record(Label, Message).
 convert_to_records([], []).
 convert_to_records([row(Label, Message) | Rest], [record(Label, Message) | Records]) :-
     convert_to_records(Rest, Records).
@@ -38,34 +43,67 @@ read_csv(FilePath, Records) :-
     ;   print_message(error, error('File does not exist.')), fail
     ).
 
-% divide_dataset(+Records, -TrainSet, -TestSet)
-% Divide um conjunto de dados em treino (70%) e teste (30%).
+%% divide_dataset(+Records:list, -TrainSet:list, -TestSet:list) is det.
+%
+%  Splits a list of records into training and test sets using a 70/30 ratio.
+%
+%  @param Records   The complete list of records.
+%  @param TrainSet  The resulting list containing 70% of the records for training.
+%  @param TestSet   The remaining 30% of the records for testing.
 divide_dataset([], [], []) :- !.
 divide_dataset(Records, TrainSet, TestSet) :-
     length(Records, Total),
     TrainSize is (Total * 7) // 10,
     split_at(TrainSize, Records, TrainSet, TestSet), !.
 
-% split_at(+N, +List, -FirstPart, -SecondPart)
-% Divide a lista em duas partes: os primeiros N elementos e o restante.
+%% split_at(+N:integer, +List:list, -First:list, -Second:list) is det.
+%
+%  Splits a list into two parts at the specified index.
+%
+%  @param N       The index at which to split the list.
+%  @param List    The input list to be split.
+%  @param First   The sublist containing the first N elements.
+%  @param Second  The sublist containing the remaining elements.
 split_at(0, List, [], List).
 split_at(N, [H|T], [H|First], Second) :-
     N > 0,
     N1 is N - 1,
     split_at(N1, T, First, Second).
 
-% download_default/1 lê o arquivo CSV e retorna uma lista de registros.
+%% download_default(-Records:list) is det.
+%
+%  Loads the default dataset from a predefined CSV file path.
+%
+%  @param Records  A list of records read from the default CSV file.
+%
 download_default(Records) :-
     File = '../data/train_data/SMSSpamCollection.csv',
     read_csv(File, Records).
 
-% divide_csv_training_test(+FilePath:string, +Records:list, -TrainingSet:list, -TestSet:list)
-% Divide o dataset em conjuntos de treinamento e teste com base no arquivo CSV pré-definido ou usa um dataset padrão.
+%% divide_csv_training_test(+FilePath:string, +Records:list, -TrainingSet:list, -TestSet:list) is det.
+%
+%  Splits the dataset into training and test sets using the given records.
+%
+%  @param FilePath    The path to the original CSV file (used for identifying the dataset context).
+%  @param Records     The list of all records to be divided.
+%  @param TrainingSet The resulting list of training records.
+%  @param TestSet     The resulting list of test records.
+%
 divide_csv_training_test("data/train_data/SMSSpamCollection.csv", Records, TrainingSet, TestSet) :-
-    divide_dataset(Records, TrainingSet, TestSet), !.  % Dividir o dataset se for o arquivo esperado.
-    
+    divide_dataset(Records, TrainingSet, TestSet), !.
+
+%% divide_csv_training_test(+InputPath:string, +Records:list, -TrainingRecords:list, +VectorCsvDefault:string) is det.
+%
+%  Divides the CSV records into training data. In this version, no actual division is performed; all records are used as training data,
+%  and a default vector CSV is downloaded.
+%
+%  @param InputPath         Placeholder for input file path (not used in logic).
+%  @param Records           The list of all records.
+%  @param TrainingRecords   The output list of training records (same as input records).
+%  @param VectorCsvDefault  The path or identifier used to download the default vector CSV.
+%
 divide_csv_training_test(_, Records, Records, VectorCsvDefault) :-
-    download_default(VectorCsvDefault).  % Se não for o arquivo esperado, usar o dataset padrão.
+    download_default(VectorCsvDefault).
 
 %% save_to_csv(+FileName:string, +Classification:string, +Message:string) is det.
 %
@@ -78,16 +116,13 @@ divide_csv_training_test(_, Records, Records, VectorCsvDefault) :-
 %  This predicate appends the classification and message to the CSV file and clears the terminal.
 %
 save_to_csv(FileName, Classification, Message) :-
-    % Create the CSV line format.
     atomic_list_concat([Classification, Message], ',', CSVLine),
     atom_concat(CSVLine, '\n', FormattedLine),
 
-    % Open the file, append the data, and close the file.
     open(FileName, append, Stream),
     write(Stream, FormattedLine),
     close(Stream),
 
-    % Clear the terminal and print the success message.
     clear_screen,
     writeln("Data saved successfully!\n").
 
@@ -103,7 +138,6 @@ save_to_csv(FileName, Classification, Message) :-
 save_model_to_json(ModelName, FilePath) :-
     JsonPath = '../data/models/models.json',
 
-    % Load the existing models from the JSON file or create a new dictionary if not exists.
     (   exists_file(JsonPath)
     ->  open(JsonPath, read, Stream),
         json_read_dict(Stream, ExistingModels),
@@ -111,15 +145,12 @@ save_model_to_json(ModelName, FilePath) :-
     ;   ExistingModels = _{}
     ),
 
-    % Insert the new model into the dictionary.
     NewModels = ExistingModels.put(ModelName, FilePath),
 
-    % Write the updated dictionary back to the JSON file.
     open(JsonPath, write, OutStream),
     json_write_dict(OutStream, NewModels),
     close(OutStream),
 
-    % Print success message.
     writeln('\n✅ Model saved successfully!').
 
 %% load_model_map(+Path:string, -Models:dict) is det.
@@ -174,7 +205,13 @@ ensure_csv_extension(FileName, Result) :-
 remove_header([row('Label', 'Message') | Tail], Tail):-!.
 remove_header(Rows, Rows).
 
-%Retira o ., das entradas
+%% clean_input(+Input:string, -Cleaned:string) is det.
+%
+%  Cleans an input string by removing a trailing period if present.
+%
+%  @param Input    The original input string.
+%  @param Cleaned  The cleaned version of the string without a trailing period.
+%
 clean_input(_, _) :-
     string_chars(_, Chars),
     (   append(Core, ['.'], Chars)
@@ -187,16 +224,33 @@ clean_input(_, _) :-
 %
 %  Writes the given Data (a dict) to the file at Path in JSON format.
 %
+%  @param Path  The file path where the JSON data will be written.
+%  @param Data  The dictionary to be written as JSON.
+%
 write_json(Path, Data) :-
     open(Path, write, Stream),
     json_write_dict(Stream, Data),
     close(Stream).
 
-% Helper to remove a key from a dict.
+%% remove_key_from_dict(+Key:any, +Dict:dict, -NewDict:dict) is det.
+%
+%  Removes a key-value pair from a dictionary based on the specified key.
+%
+%  @param Key      The key to be removed from the dictionary.
+%  @param Dict     The original dictionary.
+%  @param NewDict  The resulting dictionary without the specified key.
+%
 remove_key_from_dict(Key, Dict, NewDict) :-
     dict_pairs(Dict, Tag, Pairs),
     exclude(pair_with_key(Key), Pairs, NewPairs),
     dict_create(NewDict, Tag, NewPairs).
 
+%% pair_with_key(+Key:any, +Pair:pair) is semidet.
+%
+%  Succeeds if the given pair is of the form Key-_, indicating it is paired with the specified Key.
+%
+%  @param Key   The key to match in the pair.
+%  @param Pair  A term of the form Key-Value.
+%
 pair_with_key(Key, Key-_) :- !.
 pair_with_key(_, _) :- false.

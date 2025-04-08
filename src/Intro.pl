@@ -1,3 +1,6 @@
+%%Module      : Intro
+%Description : Provides animated intro and outro with typing effect for the SPA ML Classifier program.
+%Stability   : stable
 :- module('Intro.pl', [
     type_writer/1,
     animated_logo/0,
@@ -19,6 +22,11 @@ type_writer(Text) :-
     string_chars(Text, Chars),
     type_writer_chars(Chars).
 
+%% type_writer_chars(+Chars:list) is det.
+%
+%  Simulates a typewriter effect by printing characters one by one with a short delay.
+%
+%  @param Chars  A list of characters to be printed sequentially with a delay.
 type_writer_chars([]).
 type_writer_chars([C|Cs]) :-
     put_char(C),
