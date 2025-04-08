@@ -30,7 +30,7 @@ jobs:
           brew install swi-prolog
 
       - name: Executar linter customizado
-        run: swipl -q -t halt -l lint.pl
+        run: ./run_lint.sh
 
       - name: Executar testes
         run: swipl -t halt test/Main.plt
