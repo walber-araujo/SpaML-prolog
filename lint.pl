@@ -1,34 +1,25 @@
 :- initialization(main).
 :- set_prolog_flag(warnings, on).
 
-:- dynamic lint_error/0.
+% Use a non-backtrackable global flag to indicate if a warning or error occurred.
+:- nb_setval(lint_error_flag, false).
 
 % Message hook to capture warning and error messages.
-% When a warning or error message is generated, assert a flag (lint_error)
-% to indicate that an issue was encountered during linting.
+% When a warning or error is encountered, set the lint_error_flag to true.
 :- multifile prolog:message_hook/3.
-prolog:message_hook(Term, Level, _Lines) :-
-    member(Level, [warning,error]),
-    ( lint_error -> true ; assertz(lint_error) ),
+prolog:message_hook(Message, Level, _Lines) :-
+    member(Level, [warning, error]),
+    nb_setval(lint_error_flag, true),
     fail.
 prolog:message_hook(_,_,_).
 
-% main/0 - The entry point of the linter.
-%
-% It searches for all .pl files in the "src" directory, lints them, 
-% and then halts with exit code 1 if any warnings or errors were captured,
-% or with exit code 0 if everything passed.
 main :-
-    % Search for .pl files within the "src" directory (adjust the path as needed)
+    % Expand all .pl files in the src directory.
     expand_file_name('src/*.pl', Files),
     lint_files(Files),
-    ( lint_error -> halt(1) ; halt(0) ).
+    nb_getval(lint_error_flag, Flag),
+    ( Flag == true -> halt(1) ; halt(0) ).
 
-% lint_files/1 - Recursively processes a list of files.
-%
-% For each file, it prints a message indicating that the file is being checked.
-% It then uses catch/3 with load_files/2 to attempt to load the file.
-% If an exception occurs, the error message is printed and the process halts with exit code 1.
 lint_files([]).
 lint_files([File|Rest]) :-
     format("Checking ~w~n", [File]),
