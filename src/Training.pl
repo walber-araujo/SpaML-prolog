@@ -1,9 +1,7 @@
-=======
 %%Module      : Training
 %Description : Model training logic.
 %Stability   : stable.
-:- module('Training.pl', [train_model_csv/3, train_model/5]).
->>>>>>> 51f3c89 (Documented)
+:- module('Training.pl', [train_model_csv/3, train_model/3]).
 
 :- use_module(library(csv)).
 :- use_module(library(lists)).

@@ -7,7 +7,7 @@
 % When a warning or error message is generated, assert a flag (lint_error)
 % to indicate that an issue was encountered during linting.
 :- multifile prolog:message_hook/3.
-prolog:message_hook(Term, Level, _Lines) :-
+prolog:message_hook(_, Level, _Lines) :-
     member(Level, [warning,error]),
     ( lint_error -> true ; assertz(lint_error) ),
     fail.

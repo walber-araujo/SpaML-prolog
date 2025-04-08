@@ -94,4 +94,4 @@ accuracy_csvs:-
 %  @param Label     The performance label based on the accuracy.
 model_classification(Accuracy, "Bad"):- Accuracy < 65.0, !.
 model_classification(Accuracy, "Moderate"):- Accuracy < 85.0, !.
-model_classification(Accuracy, "Good").
+model_classification(_, "Good").
