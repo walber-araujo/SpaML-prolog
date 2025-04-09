@@ -90,7 +90,7 @@ count_words([Head|Rows], HamCount, SpamCount, CurrentHamState, CurrentSpamState,
     count_phrase(Category, Tokens, CurrentHamState, NextState, CurrentSpamState, NextSpamState),
     count_words(Rows, ReturnHamCount, ReturnSpamCount, NextState, NextSpamState, R).
 
-count_words(Rows, R):- count_words(Rows, 0, 0, [], [], R). %%tira?
+count_words(Rows, R):- count_words(Rows, 0, 0, [], [], R).
 
 %% calculate_word_probabilities(+WordCounts:list, +TotalCount:integer,
 %%                               +OtherWordCounts:list, +OtherTotalCount:integer,

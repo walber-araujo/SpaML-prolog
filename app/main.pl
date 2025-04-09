@@ -2,7 +2,7 @@
 
 :- use_module('../src/CLI.pl').
 :- use_module('../src/Utils.pl').
-:- use_module('../src/Intro.pl').
+:- load_files(["src/Intro.pl"],[encoding(utf8)]).
 
 main:-
     show_intro,
