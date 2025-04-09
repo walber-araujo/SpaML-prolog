@@ -75,6 +75,7 @@ process_option("5"):-
     clear_screen,
     write('\nClassifying individual messages...\n'),
     train_model_csv("data/train_data/SMSSpamCollection.csv", Ham_Probs, Spam_Probs),
+    format('CSV file loaded from ~w \n', ["data/train_data/SMSSpamCollection.csv"]),
     classification_submenu(Ham_Probs, Spam_Probs),
     menu.
 
@@ -368,6 +369,7 @@ lookup_model_name(Key, [Key-Value | _]):-
     format('  Training with model: ~w\n', [Key]),
     write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
     train_model_csv(Value, Ham_Probs, Spam_Probs),
+    format('CSV file loaded from ~w \n', [Value]),
     classification_submenu(Ham_Probs, Spam_Probs),
     clear_screen,
     menu, !.
