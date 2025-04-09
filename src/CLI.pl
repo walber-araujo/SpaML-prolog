@@ -44,7 +44,8 @@ process_option("1"):-
     reusing_previous_model_submenu,
     menu.
 
-process_option("2"):- 
+process_option("2"):-
+    clear_screen,
     write('\nAdd a new model by providing a name and selecting a CSV file containing training data.\n'), 
     write('Type a name to your model (or "exit" to quit).\n'),
     add_new_model_submenu,
@@ -58,7 +59,7 @@ process_option("3"):-
 process_option("4") :-
     clear_screen,
     write('Training model manually...\n'),
-    write('Enter the file name or type exit to return: '),
+    write('Enter the file name (or type "exit" to return): '),
     flush_output,
     read_line_to_string(user_input, FileName),
     ( FileName == "exit" ->
@@ -75,6 +76,7 @@ process_option("5"):-
     clear_screen,
     write('\nClassifying individual messages...\n'),
     train_model_csv("data/train_data/SMSSpamCollection.csv", Ham_Probs, Spam_Probs),
+    format('CSV file loaded from ~w \n', ["data/train_data/SMSSpamCollection.csv"]),
     classification_submenu(Ham_Probs, Spam_Probs),
     menu.
 
@@ -101,15 +103,21 @@ process_option(_):-
 %    - Validates the file path.
 %    - If valid, saves the model name and path to a JSON map using 'save_model_to_json/2'.
 %    - If the path is invalid or the user types "exit", the operation is canceled silently.
-add_new_model_submenu:-
+add_new_model_submenu :-
     write('Enter the new model name: '),
     read_line_to_string(user_input, Model),
-    string_to_atom(Model,Model_Name),
-    (Model_Name \= 'exit' ->
-    ask_path(Path_Model),
-    (Path_Model \= "unknown" ->
-    save_model_to_json(Model_Name, Path_Model));
-    _ = Model_Name
+    string_to_atom(Model, Model_Name),
+    ( Model_Name == 'exit' ->
+        clear_screen,
+        menu
+    ;
+        ask_path(Path_Model),
+        ( Path_Model == "unknown" ->
+            clear_screen,
+            menu
+        ;
+            save_model_to_json(Model_Name, Path_Model)
+        )
     ).
 
 %% ask_path(-Model_Path) is det.
@@ -325,7 +333,7 @@ reusing_previous_model_submenu:-
     write('       Available Models       \n'),
     write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
     print_models(Dict_Model),
-    write('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
+    write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
     write('\nEnter the name of the model you want to reuse (or "exit" to quit): '),
     read_line_to_string(user_input, Model),
     string_to_atom(Model,Model_Name),
@@ -368,6 +376,7 @@ lookup_model_name(Key, [Key-Value | _]):-
     format('  Training with model: ~w\n', [Key]),
     write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
     train_model_csv(Value, Ham_Probs, Spam_Probs),
+    format('CSV file loaded from ~w \n', [Value]),
     classification_submenu(Ham_Probs, Spam_Probs),
     clear_screen,
     menu, !.
@@ -375,8 +384,8 @@ lookup_model_name(Key, [Key-Value | _]):-
     clear_screen,
     format('\n⚠️  CSV file ~w not found. Please check the file path.\n', [Value]),
     reusing_previous_model_submenu, !.
-lookup_model_name(_, [_ | Tail]):-
-    lookup_model_name(_, Tail).
+lookup_model_name(Key, [_ | Tail]):-
+    lookup_model_name(Key, Tail).
 lookup_model_name(Model_Name, []):-
     clear_screen,
     format('\n⚠️  Model ~w not found. Please try again.\n', [Model_Name]),

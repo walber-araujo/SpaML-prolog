@@ -22,7 +22,7 @@
 %  does not exist or is empty.
 train_model_csv(File_Path, Ham_Probs, Spam_Probs):- exists_file(File_Path),
     clear_screen,
-    format('CSV file loaded from ~w \n', [File_Path]),
+    write("Loading model...\n"),
     read_csv(File_Path, Messages),
     (Messages == [] -> write('Error reading the CSV'), Ham_Probs = [], Spam_Probs = [] ;
     divide_csv_training_test(File_Path, Messages, Train_Set, Test_Set),
