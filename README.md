@@ -69,16 +69,10 @@ git clone https://github.com/walber-araujo/SpaML-prolog.git
 
 2️⃣ Run:
 
-Linux/MacOS:
+Linux/MacOS/Windows:
 
 ```sh
 swipl -t halt app/main.pl
-```
-
-Windows:
-
-```sh
-
 ```
 
 

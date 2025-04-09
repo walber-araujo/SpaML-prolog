@@ -48,7 +48,7 @@ sum_probs([Word | Rest], Probs_Map, Sum) :-
 %  @param Key    The key to search for.
 %  @param List   The list of row(Key, Value) terms.
 %  @param Value  The value associated with the key, or 0 if not found.
-find_with_default(_, [], 0).
+find_with_default(_, [], 0):- !.
 find_with_default(Key, [(Key, Value) | _], Value) :- !.
 find_with_default(Key, [row(Key, Value) | _], Value) :- !.
 find_with_default(Key, [_ | Rest], Value) :-

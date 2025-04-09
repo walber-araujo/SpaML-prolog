@@ -39,8 +39,8 @@ test(calculate_probabilities):-
     Div is 5 / 3,
     assertion(Result == [row("test", Div)]).
 
-% test(probabilities_division_by_zero):-
-%     calculate_word_probabilities([("test", 4)], 2, [], 0, Result),
-%     assertion(Result == [row("test", 0)]).
+test(probabilities_division_by_zero):-
+    calculate_word_probabilities([("test", 4)], 2, [], 0, Result),
+    assertion(Result == [row("test", 0)]).
 
 :- end_tests(model_test).

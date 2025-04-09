@@ -108,13 +108,18 @@ count_words(Rows, R):- count_words(Rows, 0, 0, [], [], R).
 %  @param OtherWordCounts    List of (Word, Count) pairs in the opposing class.
 %  @param OtherTotalCount    Total word count in the opposing class.
 %  @param Probabilities      Output list of row(Word, SmoothedRatio) entries.
-calculate_word_probabilities([], _, _, _, []).
-calculate_word_probabilities([(Word, Count) | Tail], Total_Count, Other_Words, Other_Words_Count, [New_Head | Tail2]):-
-                    length([(Word, Count) | Tail], Size_Words_Count),
-                    Word_Given_Class is ((Count + 1) / (Total_Count + Size_Words_Count)), % Laplace smoothing
-                    find_with_default(Word, Other_Words, Other_Count_Word),
-                    length(Other_Words, Size_Other_Words_Count),
-                    Other_Class_Given_Word is ((Other_Count_Word + 1) / (Other_Words_Count + Size_Other_Words_Count)), % Laplace smoothing
-                    New_Count is Word_Given_Class / Other_Class_Given_Word,
-                    New_Head = row(Word, New_Count),
-                    calculate_word_probabilities(Tail, Total_Count, Other_Words, Other_Words_Count, Tail2).
+calculate_word_probabilities([], _, _, _, _, []).
+calculate_word_probabilities([(Word, Count) | Tail], Total_Count, Other_Words, Other_Words_Count, Size_Words_Count, [New_Head | Tail2]):-
+    % Laplace smoothing
+    (Total_Count + Size_Words_Count =\= 0 -> Word_Given_Class is ((Count + 1) / (Total_Count + Size_Words_Count)) ; Word_Given_Class = 0),
+    find_with_default(Word, Other_Words, Other_Count_Word),
+    length(Other_Words, Size_Other_Words_Count),
+    % Laplace smoothing
+    (Other_Words_Count + Size_Other_Words_Count =\= 0 -> Other_Class_Given_Word is ((Other_Count_Word + 1) / (Other_Words_Count + Size_Other_Words_Count)) ; Other_Class_Given_Word = 0),
+    (Other_Class_Given_Word =\= 0 -> New_Count is Word_Given_Class / Other_Class_Given_Word ; New_Count = 0),
+    New_Head = row(Word, New_Count),
+    calculate_word_probabilities(Tail, Total_Count, Other_Words, Other_Words_Count, Size_Words_Count, Tail2).
+
+calculate_word_probabilities(WordsCount, Total_Count, Other_Words, Other_Words_Count, R):-
+    length(WordsCount, Size_Words_Count),
+    calculate_word_probabilities(WordsCount, Total_Count, Other_Words, Other_Words_Count, Size_Words_Count, R).
