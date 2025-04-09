@@ -375,8 +375,8 @@ lookup_model_name(Key, [Key-Value | _]):-
     clear_screen,
     format('\n⚠️  CSV file ~w not found. Please check the file path.\n', [Value]),
     reusing_previous_model_submenu, !.
-lookup_model_name(_, [_ | Tail]):-
-    lookup_model_name(_, Tail).
+lookup_model_name(Key, [_ | Tail]):-
+    lookup_model_name(Key, Tail).
 lookup_model_name(Model_Name, []):-
     clear_screen,
     format('\n⚠️  Model ~w not found. Please try again.\n', [Model_Name]),
