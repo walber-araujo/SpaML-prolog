@@ -326,7 +326,7 @@ reusing_previous_model_submenu:-
     write('       Available Models       \n'),
     write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
     print_models(Dict_Model),
-    write('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
+    write('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'),
     write('\nEnter the name of the model you want to reuse (or "exit" to quit): '),
     read_line_to_string(user_input, Model),
     string_to_atom(Model,Model_Name),
