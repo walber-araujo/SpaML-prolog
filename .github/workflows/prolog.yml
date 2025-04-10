@@ -1,0 +1,36 @@
+name: Prolog CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v2
+
+      - name: Instalar SWI-Prolog no Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y swi-prolog
+
+      - name: Instalar SWI-Prolog no macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install swi-prolog
+
+      - name: Executar linter customizado
+        run: ./run_lint.sh
+
+      - name: Executar testes
+        run: swipl -t halt test/Main.plt

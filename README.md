@@ -27,6 +27,31 @@ spaML is a spam message classifier developed in **Prolog**, using the **Naive Ba
 
 ```
 spaML/
+├── README.md
+├── app
+│   └── main.pl
+├── data
+│   ├── models
+│   │   └── models.json
+│   └── train_data
+│       ├── SMSSpamCollection.csv
+│       └── short_messages_formatted.csv
+├── src
+│   ├── CLI.pl
+│   ├── Classifier.pl
+│   ├── Intro.pl
+│   ├── Metric.pl
+│   ├── Model.pl
+│   ├── ModelTest.pl
+│   ├── Preprocessing.pl
+│   ├── Training.pl
+│   └── Utils.pl
+└── test
+    ├── ClassifierTest.plt
+    ├── Main.plt
+    ├── ModelTest.plt
+    ├── PreprocessingTest.plt
+    └── TrainingTest.plt
 ```
 
 ---
@@ -39,26 +64,15 @@ spaML/
 
 1️⃣ Clone the repository:
 ```sh
-
+git clone https://github.com/walber-araujo/SpaML-prolog.git
 ```
 
-2️⃣ Build the project:
-```sh
+2️⃣ Run:
 
-```
-
-3️⃣ Run:
-
-Linux/MacOS:
+Linux/MacOS/Windows:
 
 ```sh
-
-```
-
-Windows:
-
-```sh
-
+swipl -t halt app/main.pl
 ```
 
 
@@ -66,12 +80,12 @@ Windows:
 
 To run the linter:
 ```sh
-
+swipl -s lint.pl
 ```
 
 To run the tests:
 ```sh
-
+swipl -t halt test/Main.plt
 ```
 
 ---
@@ -97,8 +111,6 @@ ham,Hello, how are you?
 spam,You won a free prize! Click here!
 ```
 > Where `label` can be **ham** or **spam**.
-
----
 
 ---
 
