@@ -58,6 +58,8 @@ spaML/
 
 ## 📋 Requirements
 
+- [SWI-Prolog >=8.2.0](https://www.swi-prolog.org/download/stable)
+
 ---
 
 ## 🚀 How to Run
