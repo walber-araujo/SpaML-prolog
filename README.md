@@ -114,8 +114,8 @@ spam,You won a free prize! Click here!
 
 ---
 
-## 📜 License
-
+## 📜 [License](LICENSE)
+This project is under the [MIT license](https://opensource.org/licenses/MIT).
 
 ---
 
